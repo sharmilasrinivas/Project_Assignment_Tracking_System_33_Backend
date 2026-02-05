@@ -20,13 +20,13 @@ router.post(
     try {
       const { developerId, projectId } = req.body;
 
-      // 1️⃣ Check developer exists
+      //Check developer exists
       const developer = await User.findById(developerId);
       if (!developer || developer.role !== "DEVELOPER") {
         return res.status(400).json({ message: "Invalid developer" });
       }
 
-      // 2️⃣ Check project exists
+      //Check project exists
       const project = await Project.findById(projectId);
       if (!project) {
         return res.status(400).json({ message: "Project not found" });
@@ -35,7 +35,7 @@ router.post(
       const newStartDate = project.startDate;
       const newEndDate = project.endDate;
 
-      // 3️⃣ OVERLAP CHECK (CRITICAL LOGIC)
+      //OVERLAP CHECK (CRITICAL LOGIC)
       const overlappingAssignment = await Assignment.findOne({
         developer: developerId,
         startDate: { $lte: newEndDate },
@@ -48,7 +48,7 @@ router.post(
         });
       }
 
-      // 4️⃣ Create assignment
+      //Create assignment
       const assignment = await Assignment.create({
         developer: developerId,
         project: projectId,
